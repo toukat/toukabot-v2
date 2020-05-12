@@ -1,5 +1,5 @@
 package config
 
 type Config struct {
-	BotToken string `yaml:"token"`
+	BotToken string `yaml:"Token"`
 }
