@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	config "github.com/toukat/toukabot-v2/config"
+	"github.com/toukat/toukabot-v2/config"
 	"github.com/toukat/toukabot-v2/util/logger"
 
 	"os"
