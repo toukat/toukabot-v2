@@ -10,7 +10,6 @@ import (
 	"os/signal"
 
 	"github.com/bwmarrin/discordgo"
-	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -40,16 +39,13 @@ func main() {
 	configFile, err := os.Open(*configLocation)
 	if err != nil {
 		log.Fatal(err)
-		log.Fatal(fmt.Sprint("Unable to open config file at %s", *configLocation))
+		log.Fatal(fmt.Sprintf("Unable to open config file at %s", *configLocation))
 		os.Exit(-1)
 	}
 
-	c := config.Config{}
-	decoder := yaml.NewDecoder(configFile)
-	err = decoder.Decode(&c)
+	c, err := config.CreateConfig(configFile)
 	if err != nil {
-		log.Fatal(err)
-		log.Fatal("Unable to parse config file")
+		log.Fatal("Error parsing config file")
 		os.Exit(-1)
 	}
 
