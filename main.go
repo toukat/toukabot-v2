@@ -21,7 +21,7 @@ var (
 
 func onReady(s *discordgo.Session, e *discordgo.Ready) {
 	log.Info("ToukaBot started")
-	err := s.UpdateStatus(0, "test")
+	err := s.UpdateStatus(0, "")
 
 	if err != nil {
 		log.Error(err)
@@ -59,12 +59,6 @@ func main() {
 
 	config.SetConfig(&c)
 
-	//c, err := config.CreateConfig(configFile)
-	//if err != nil {
-	//	log.Fatal("Error parsing config file")
-	//	os.Exit(-1)
-	//}
-
 	log.Info("Starting Discord session...")
 	d, err = discordgo.New(c.BotToken)
 	if err != nil {
@@ -82,6 +76,9 @@ func main() {
 		log.Fatal("Failed to create Discord websocket connection")
 		os.Exit(-1)
 	}
+
+	// Start thread to change the status
+	go RotateStatuses(d, c.Statuses, c.StatusInterval)
 
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, os.Interrupt, os.Kill)

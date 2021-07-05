@@ -3,3 +3,5 @@ TwitterToken:
 TwitterSecret:
 Host:
 Prefix:
+Statuses:
+StatusInterval:
