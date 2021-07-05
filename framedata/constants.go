@@ -1,4 +1,5 @@
 package framedata
 
-const CharacterName = "characterName"
-const Input = "input"
+import "github.com/toukat/toukabot-v2/util/logger"
+
+var log = logger.GetLogger("FrameData")
