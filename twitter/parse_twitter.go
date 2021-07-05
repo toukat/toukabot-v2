@@ -54,8 +54,8 @@ func ParseTwitterLink(session *discordgo.Session, channelID string, url string) 
 		return
 	}
 
-	if len(tweet.ExtendedEntities.Media) < 1 {
-		log.Info(fmt.Sprintf("Tweet has no media, id=%d", id))
+	if tweet.ExtendedEntities == nil || len(tweet.ExtendedEntities.Media) < 1 {
+		log.Info(fmt.Sprintf("Tweet has no media or animated media, id=%d", id))
 		return
 	}
 
