@@ -9,8 +9,11 @@ import (
 )
 
 type Config struct {
-	BotToken string `yaml:"Token"`
-	APIHost  string `yaml:"Host"`
+	BotToken      string `yaml:"Token"`
+	TwitterToken  string `yaml:"TwitterToken"`
+	TwitterSecret string `yaml:"TwitterSecret"`
+	APIHost       string `yaml:"Host"`
+	CommandPrefix string `yaml:"Prefix"`
 }
 
 var log = logger.GetLogger("Config")
@@ -31,4 +34,8 @@ func CreateConfig(file *os.File) (*Config, error) {
 	}
 
 	return config, nil
+}
+
+func SetConfig(c *Config) {
+	config = c
 }

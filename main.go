@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/toukat/toukabot-v2/config"
 	"github.com/toukat/toukabot-v2/util/logger"
+	"gopkg.in/yaml.v2"
 
 	"os"
 	"os/signal"
@@ -30,6 +31,10 @@ func onReady(s *discordgo.Session, e *discordgo.Ready) {
 	uid = e.User.ID
 }
 
+func onMessageCreate(session *discordgo.Session, message *discordgo.MessageCreate) {
+	go ParseMessage(session, message)
+}
+
 func main() {
 	log = logger.GetLogger("ToukaBot V2 Main")
 
@@ -43,11 +48,22 @@ func main() {
 		os.Exit(-1)
 	}
 
-	c, err := config.CreateConfig(configFile)
+	c := config.Config{}
+	decoder := yaml.NewDecoder(configFile)
+	err = decoder.Decode(&c)
 	if err != nil {
-		log.Fatal("Error parsing config file")
+		log.Fatal("Unable to decode config file")
+		log.Fatal(err)
 		os.Exit(-1)
 	}
+
+	config.SetConfig(&c)
+
+	//c, err := config.CreateConfig(configFile)
+	//if err != nil {
+	//	log.Fatal("Error parsing config file")
+	//	os.Exit(-1)
+	//}
 
 	log.Info("Starting Discord session...")
 	d, err = discordgo.New(c.BotToken)
@@ -58,6 +74,7 @@ func main() {
 	}
 
 	d.AddHandler(onReady)
+	d.AddHandler(onMessageCreate)
 
 	err = d.Open()
 	if err != nil {
