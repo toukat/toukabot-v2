@@ -32,11 +32,7 @@ func RotateStatuses(session *discordgo.Session, statuses []string, interval int6
 	for true {
 		time.Sleep(time.Duration(interval) * time.Second)
 
-		newNdx := ndx
-		for newNdx == ndx {
-			newNdx = util.RandomRange(0, len(statuses))
-		}
-		ndx = newNdx
+		ndx = util.RandomRange(0, len(statuses))
 
 		err = session.UpdateStatus(0, statuses[ndx])
 		if err != nil {
