@@ -41,12 +41,17 @@ func ParseTwitterLink(session *discordgo.Session, channelID string, url string) 
 			splitId := strings.Split(v, "?")
 			temp, err := strconv.ParseInt(splitId[0], 10, 64)
 			if err != nil {
-				log.Error(fmt.Sprintf("Unable to fetch Tweet, err=%s", err))
+				log.Error(fmt.Sprintf("Unable to parse Tweet ID, err=%s", err))
 				return
 			}
 
 			id = temp
 		}
+	}
+
+	if id < 0 {
+		log.Info(fmt.Sprintf("Link did not contain valid Twitter ID, url=%s", url))
+		return
 	}
 
 	tweet, _, err := twitterClient.Statuses.Show(id, nil)

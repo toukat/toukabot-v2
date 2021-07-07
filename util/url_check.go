@@ -21,17 +21,8 @@ var log = logger.GetLogger("Util")
  * True if string is a valid URL, else false
  */
 func URLValid(s string) bool {
-	_, err := url.ParseRequestURI(s)
-	if err != nil {
-		return false
-	}
-
 	u, err := url.Parse(s)
-	if err != nil && u!= nil && u.Scheme == "" && u.Host == "" {
-		return false
-	}
-
-	return true
+	return err == nil && u.Scheme != "" && u.Host != ""
 }
 
 /*
