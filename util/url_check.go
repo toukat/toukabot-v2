@@ -27,7 +27,7 @@ func URLValid(s string) bool {
 	}
 
 	u, err := url.Parse(s)
-	if err != nil && u.Scheme == "" && u.Host == "" {
+	if err != nil && u!= nil && u.Scheme == "" && u.Host == "" {
 		return false
 	}
 
@@ -48,12 +48,16 @@ func URLAvailable(url string) bool  {
 	log.Info(fmt.Sprintf("Checking availability of URL, url=%s", url))
 
 	r, err := http.Get(url)
-	available := err == nil && r.StatusCode  == 200
+	available := err == nil && r!= nil && r.StatusCode == 200
 
 	if available {
 		log.Info(fmt.Sprintf("URL is available, url=%s", url))
 	} else {
-		log.Error(fmt.Sprintf("URL is not available, url=%s, err=%o, status=%i", url, err, r.StatusCode))
+		if r != nil {
+			log.Error(fmt.Sprintf("URL is not available, url=%s, err=%o, status=%d", url, err, r.StatusCode))
+		} else {
+			log.Error(fmt.Sprintf("URL is not available, url=%s, err=%o, status=nil", url, err))
+		}
 	}
 
 	return available
