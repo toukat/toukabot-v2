@@ -69,7 +69,23 @@ func ParseTwitterLink(session *discordgo.Session, channelID string, url string) 
 
 	if media == "video" {
 		log.Info(fmt.Sprintf("Tweet has video, id=%d", id))
-		_, err = session.ChannelMessageSend(channelID, tweet.ExtendedEntities.Media[0].VideoInfo.Variants[0].URL)
+
+		videoNdx := -1
+		for k, v := range tweet.ExtendedEntities.Media[0].VideoInfo.Variants {
+			if v.Bitrate > 0 && strings.Contains(v.URL, "mp4") {
+				videoNdx = k
+				break
+			}
+		}
+
+		if videoNdx < 0 {
+			log.Info(fmt.Sprintf("Tweet had no media with MP4 variant, id=%d", id))
+			videoNdx = 0
+		} else {
+			log.Info(fmt.Sprintf("Tweet had media with MP4 variant at index %d, id=%d", videoNdx, id))
+		}
+
+		_, err = session.ChannelMessageSend(channelID, tweet.ExtendedEntities.Media[0].VideoInfo.Variants[videoNdx].URL)
 		if err!= nil {
 			log.Error("Unable to send content")
 			log.Error(err)
