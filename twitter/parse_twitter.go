@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/dghubble/go-twitter/twitter"
+
 	"github.com/toukat/toukabot-v2/util"
 	"github.com/toukat/toukabot-v2/util/logger"
 )
@@ -54,7 +56,8 @@ func ParseTwitterLink(session *discordgo.Session, channelID string, url string) 
 		return
 	}
 
-	tweet, _, err := twitterClient.Statuses.Show(id, nil)
+	params := &twitter.StatusShowParams{TweetMode: "extended"}
+	tweet, _, err := twitterClient.Statuses.Show(id, params)
 	if err != nil {
 		log.Error(fmt.Sprintf("Unable to fetch Tweet, id=%d, err=%s", id, err))
 		return
@@ -71,10 +74,10 @@ func ParseTwitterLink(session *discordgo.Session, channelID string, url string) 
 		log.Info(fmt.Sprintf("Tweet has video, id=%d", id))
 
 		videoNdx := -1
+		maxBitrate := -1
 		for k, v := range tweet.ExtendedEntities.Media[0].VideoInfo.Variants {
-			if v.Bitrate > 0 && strings.Contains(v.URL, "mp4") {
+			if v.Bitrate > 0 && strings.Contains(v.URL, "mp4") && v.Bitrate > maxBitrate {
 				videoNdx = k
-				break
 			}
 		}
 
